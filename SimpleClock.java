@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.TimerTask;
 import java.util.Timer;
 
@@ -14,7 +15,10 @@ public class SimpleClock extends JFrame {
     
         Calendar calendar;
         SimpleDateFormat timeFormat;
+        String pattern = "hh:mm:ss";
+
         SimpleDateFormat dayFormat;
+
         SimpleDateFormat dateFormat;
     
         JLabel timeLabel;
@@ -34,31 +38,49 @@ public class SimpleClock extends JFrame {
             this.setForeground(Color.BLACK);
             this.setSize(400, 200);
             this.setResizable(false);
-            twentyfourhourbutton = new JButton("Switch to 24 Hour Mode");
-            twelvefourhourbutton = new JButton("Switch to 12 Hour Mode");
+
+            twentyfourhourbutton = new JButton("Switch Time Mode");
+            twelvefourhourbutton = new JButton("Switch to GMT or Local Time");
             twentyfourhourbutton.setBounds(50,150,100,30);
             twelvefourhourbutton.setBounds(50,150,100,30);
             twentyfourhourbutton.addActionListener(new ActionListener() {
+                private int clicked =2;
                                                        @Override
                                                        public void actionPerformed(ActionEvent e) {
-                                                           System.out.println("I was clicked!");
-                                                           timeFormat = new SimpleDateFormat("HH:mm:ss");
+                                                           if (clicked%2==0) {
+                                                               timeFormat.applyPattern("HH:mm:ss");
+                                                               clicked++;
+                                                           }
+                                                           else if (clicked%2!=0) {
+                                                               timeFormat.applyPattern("hh:mm:ss");
+                                                               clicked++;
+                                                           }
                                                        }
                                                    });
 
             twelvefourhourbutton.addActionListener(new ActionListener() {
-                                                       @Override
+
+                                                        private int clicked = 2;
+
+
+                @Override
+
                                                        public void actionPerformed(ActionEvent e) {
-                                                           System.out.println("I was clicked!");
-                                                           timeFormat = new SimpleDateFormat("hh:mm:ss");
+                                                           if(clicked%2==0){
+                                                           timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                                                           clicked++;
+                                                       } else if (clicked%2!=0) {
+                                                            timeFormat.setTimeZone(Calendar.getInstance().getTimeZone());
+                                                            clicked++;
+                                                           }
                                                        }
                                                    });
 
 
             twelvefourhourbutton.setBounds(50,150,100,30);
             twentyfourhourbutton.setBounds(50,150,100,30);
+            timeFormat = new SimpleDateFormat(pattern);
 
-            timeFormat = new SimpleDateFormat("hh:mm:ss a");
             dayFormat=new SimpleDateFormat("EEEE");
             dateFormat=new SimpleDateFormat("dd MMMMM, yyyy");
             timeLabel = new JLabel();
